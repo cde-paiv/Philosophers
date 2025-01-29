@@ -6,7 +6,7 @@
 /*   By: cde-paiv <cde-paiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 12:01:15 by cde-paiv          #+#    #+#             */
-/*   Updated: 2025/01/28 18:14:39 by cde-paiv         ###   ########.fr       */
+/*   Updated: 2025/01/29 21:00:41 by cde-paiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,20 +52,30 @@ typedef struct s_philo
     t_rules *rules;
 } t_philo;
 
+/* Main*/
+int main(int argc, char **argv);
+
 /* Utils */
 long        get_time(void);
 void        messages(t_philo *philo, char *text);
 void        ft_sleep(long time);
 int         ft_atoi(const char *str);
+void *philosopher_routine(void *arg);
 
 /* Init */
 void        set_program(t_rules *rules);
 int         set_mutex(t_rules *rules);
 int         set_philos(t_rules *rules);
+int init_data(t_rules *rules, char **argv);
+int init_forks(t_rules *rules);
 
 /* Monitor */
 void        monitor(t_rules *rules, t_philo *philos);
 int         check_life(t_philo *philo);
 int         check_break(t_philo *philo);
+
+/* Cleanup */
+void    close_program(t_rules *rules, t_philo *philos);
+void    mutex_destroyer(t_rules *rules);
 
 #endif

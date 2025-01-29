@@ -6,7 +6,7 @@
 /*   By: cde-paiv <cde-paiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 12:20:32 by cde-paiv          #+#    #+#             */
-/*   Updated: 2025/01/28 16:01:44 by cde-paiv         ###   ########.fr       */
+/*   Updated: 2025/01/29 21:06:16 by cde-paiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ void    messages(t_philo *philo, char *text)
     pthread_mutex_lock(&philo->rules->check);
     if (text && philo->rules->status == STILL)
         printf("%ld %d %s", time, philo->id, text);
-    pthread_mutex_lock(&philo->rules->check);
+    pthread_mutex_unlock(&philo->rules->check);
     if (text == NULL)
-        printf("%ls all philo are full", time);
+        printf("%ld all philo are full", time);
 }
 
 //pausa a execucao por um tempo especifico
@@ -42,7 +42,7 @@ void    ft_sleep(long time)
 
     start = get_time();
     while (get_time() - start < time)
-        usleep(100);
+        usleep(500);
 }
 
 //verifica se um filosofo morreu ou todos estao cheios alterando
@@ -51,28 +51,59 @@ int check_life(t_philo *philo)
 {
     pthread_mutex_lock(&philo->rules->end);
     pthread_mutex_lock(&philo->rules->check);
-    if (get_time() - philo->last_meal >= philo->rules->time_die);
+    if (get_time() - philo->last_meal >= philo->rules->time_die)
     {
-        pthread_mutex_unlock(&philo->rules->check);
         messages(philo, "died\n");
         philo->rules->status = OVER;
+        pthread_mutex_unlock(&philo->rules->check);
         pthread_mutex_unlock(&philo->rules->end);
-        return (philo->rules->status);
+        return (OVER);
     }
     if (philo->rules->meals_num > 0 && philo->num_meals >= philo->rules->meals_num)
     {
+        pthread_mutex_lock(&philo->rules->monitor);
+        philo->rules->philos_full++;
         if (philo->rules->philo_num == philo->rules->philos_full)
         {
-            pthread_mutex_unlock(&philo->rules->check);
-            philo->rules->status = OVER;
             messages(philo, NULL);
+            philo->rules->status = OVER;
+            pthread_mutex_unlock(&philo->rules->monitor);
+            pthread_mutex_unlock(&philo->rules->check);
             pthread_mutex_unlock(&philo->rules->end);
-            return (philo->rules->status);
+            return (OVER);
         }
+        pthread_mutex_unlock(&philo->rules->monitor);
     }
     pthread_mutex_unlock(&philo->rules->check);
     pthread_mutex_unlock(&philo->rules->end);
     return (STILL);
+}
+
+void *philosopher_routine(void *arg)
+{
+    t_philo *philo = (t_philo *)arg;
+
+    while (1)
+    {
+        messages(philo, "is thinking\n");
+        pthread_mutex_lock(philo->r_fork);
+        messages(philo, "has taken a fork\n");
+        pthread_mutex_lock(philo->l_fork);
+        messages(philo, "has taken a fork\n");
+        messages(philo, "is eating\n");
+        
+        philo->last_meal = get_time();
+        philo->num_meals++;
+        
+        usleep(philo->rules->time_eat * 1000);
+        
+        pthread_mutex_unlock(philo->r_fork);
+        pthread_mutex_unlock(philo->l_fork);
+        
+        messages(philo, "is sleeping\n");
+        usleep(philo->rules->time_sleep * 1000);
+    }
+    return NULL;
 }
 
 //verifica se a simulacao deve ser interrompida

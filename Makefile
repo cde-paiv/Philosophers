@@ -6,13 +6,13 @@
 #    By: cde-paiv <cde-paiv@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/28 11:42:48 by cde-paiv          #+#    #+#              #
-#    Updated: 2025/01/28 11:43:07 by cde-paiv         ###   ########.fr        #
+#    Updated: 2025/01/29 18:35:13 by cde-paiv         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRC = main.c init.c actions.c utils.c
+SRC = main.c init.c monitor.c utils.c cleanup.c
 
 OBJ = $(SRC:.c=.o)
 
