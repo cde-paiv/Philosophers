@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cde-paiv <cde-paiv@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mota <mota@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 12:01:15 by cde-paiv          #+#    #+#             */
-/*   Updated: 2025/01/29 21:00:41 by cde-paiv         ###   ########.fr       */
+/*   Updated: 2025/01/30 21:43:15 by mota             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,16 @@
 # include <unistd.h>
 # include <sys/time.h>
 
-# define STILL 0
-# define OVER 1
+# define TRUE 1
+# define FALSE 0
+
+# define THINK 5
+# define SLEEP 6
+# define FORK 7
+# define EAT 8
+# define DIE 9
+
+typedef struct s_philo t_philo;
 
 typedef struct s_rules
 {
@@ -29,53 +37,53 @@ typedef struct s_rules
     int time_eat;
     int time_sleep;
     int meals_num;
-    int status;
-    int philos_full;
-    long    start_time;
+    int has_anyone_died;
+    long int    start_time;
+    t_philo			*philos;
     pthread_mutex_t *forks;
-    pthread_mutex_t write;
-    pthread_mutex_t check;
-    pthread_mutex_t eat;
-    pthread_mutex_t end;
-    pthread_mutex_t monitor;
-    pthread_mutex_t routine;
+    pthread_mutex_t	print_mutex;
+	pthread_mutex_t	stop_mutex;
+	pthread_mutex_t	full_mutex;
+	pthread_mutex_t	last_meal_mutex;
 } t_rules;
 
 typedef struct s_philo
 {
     int id;
-    pthread_t   thread;
-    int num_meals;
-    long    last_meal;
+    int is_full;
+    long int    last_meal;
     pthread_mutex_t *r_fork;
     pthread_mutex_t *l_fork;
     t_rules *rules;
 } t_philo;
 
 /* Main*/
-int main(int argc, char **argv);
+int	main(int argc, char **argv);
+void	free_all(t_rules *rules);
+int	launch_threads(t_rules *rules);
 
 /* Utils */
-long        get_time(void);
-void        messages(t_philo *philo, char *text);
-void        ft_sleep(long time);
-int         ft_atoi(const char *str);
-void *philosopher_routine(void *arg);
+int	ft_atoi(const char *nptr);
+void	ft_bzero(void *s, size_t n);
+long int    philo_print(t_philo *philo, int action);
 
 /* Init */
-void        set_program(t_rules *rules);
-int         set_mutex(t_rules *rules);
-int         set_philos(t_rules *rules);
-int init_data(t_rules *rules, char **argv);
-int init_forks(t_rules *rules);
+int init_data(int argc, char **argv, t_rules *rules);
 
-/* Monitor */
-void        monitor(t_rules *rules, t_philo *philos);
-int         check_life(t_philo *philo);
-int         check_break(t_philo *philo);
+/* error */
+int	check_args(int argc, char **argv);
+void	display_error_msg(int error);
 
-/* Cleanup */
-void    close_program(t_rules *rules, t_philo *philos);
-void    mutex_destroyer(t_rules *rules);
+/* threads */
+int	has_died(t_philo *philo);
+int	eating(t_philo *philo);
+int	sleeping(t_philo *philo);
+int	thinking(t_philo *philo);
+void	*routine(void *ptr);
+
+/* time */
+long int	get_current_time(void);
+void	my_sleep(int sleep, long int last_meal);
+void	*check_time(void *ptr);
 
 #endif

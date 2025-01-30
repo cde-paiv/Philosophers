@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cde-paiv <cde-paiv@student.42.fr>          +#+  +:+       +#+         #
+#    By: mota <mota@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/28 11:42:48 by cde-paiv          #+#    #+#              #
-#    Updated: 2025/01/29 18:35:13 by cde-paiv         ###   ########.fr        #
+#    Updated: 2025/01/30 21:44:19 by mota             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRC = main.c init.c monitor.c utils.c cleanup.c
+SRC = main.c init.c error.c utils.c threads.c time.c
 
 OBJ = $(SRC:.c=.o)
 
