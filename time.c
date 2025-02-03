@@ -6,7 +6,7 @@
 /*   By: mota <mota@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 18:29:37 by cde-paiv          #+#    #+#             */
-/*   Updated: 2025/01/30 20:29:41 by mota             ###   ########.fr       */
+/*   Updated: 2025/02/03 19:29:03 by cde-paiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,8 @@ void	*check_time(void *ptr)
 		pthread_mutex_lock(&rules->last_meal_mutex);
 		lm_time = get_current_time() - rules->philos[i].last_meal;
 		pthread_mutex_unlock(&rules->last_meal_mutex);
-
 		if (kill_philo(rules, lm_time, i))
 			return (NULL);
-
 		pthread_mutex_lock(&rules->full_mutex);
 		if (rules->philos[i].is_full)
 		{
@@ -71,10 +69,8 @@ void	*check_time(void *ptr)
 			return (NULL);
 		}
 		pthread_mutex_unlock(&rules->full_mutex);
-
 		if (++i == rules->philo_num)
 			i = 0;
-
 		usleep(2000);
 	}
 	return (NULL);

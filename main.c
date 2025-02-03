@@ -6,7 +6,7 @@
 /*   By: mota <mota@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 18:30:14 by cde-paiv          #+#    #+#             */
-/*   Updated: 2025/01/30 21:52:34 by mota             ###   ########.fr       */
+/*   Updated: 2025/02/03 19:23:59 by cde-paiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	launch_threads(t_rules *rules)
 	int			j;
 
 	th = malloc((rules->philo_num + 1) * sizeof(pthread_t));
-    j = -1;
+	j = -1;
 	while (++j < rules->philo_num)
 	{
 		if (pthread_create(&th[j], NULL, &routine, &rules->philos[j]))
